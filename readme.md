@@ -55,6 +55,69 @@ python main.py
 
 ---
 
+## 🏗️ Modular Refactoring (In Progress)
+
+The project is being refactored into a secure, modular architecture compatible with **LiteLLM**, **PostgreSQL/pgvector**, **Hindsight**, and **Agent Zero** patterns.
+
+### New structure
+
+```
+jarvis/
+├── config/          # Paths, settings, constants
+├── security/        # Secrets, sandbox, permissions, certificates
+├── core/            # Player protocol, orchestrator
+├── llm/             # LiteLLM client and multi-model router
+├── memory/          # PostgreSQL/pgvector + JSON fallback
+├── tools/           # Secure tool wrappers
+├── audio/           # Audio pipeline (pending)
+├── web/             # Dashboard (pending)
+├── ui/              # PyQt6 UI (pending)
+└── observability/   # Logging, metrics
+```
+
+### Run the new modular CLI
+
+```bash
+uv sync --extra all
+python -m jarvis.main
+```
+
+### Security improvements
+
+- API keys stored in keyring or encrypted fallback (no plaintext `api_keys.json`).
+- Dynamic SSL certificates (no committed private keys).
+- `exec()` replaced by a subprocess sandbox with static analysis.
+- `shell=True` replaced by argument-list execution with allowlists.
+- User confirmation required for high-risk actions.
+
+See `REFACTORING_STATUS.md` for the full roadmap and `ARCHITECTURE.md` for the new design.
+
+### Configuration
+
+```bash
+# Required for LLM
+export JARVIS_LLM_API_KEY=your-key
+
+# Optional: embeddings
+export JARVIS_EMBEDDING_PROVIDER=sentence-transformers
+export JARVIS_EMBEDDING_MODEL=all-MiniLM-L6-v2
+
+# Optional: OpenTelemetry
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+```
+
+### Docker
+
+```bash
+# Start with PostgreSQL and dashboard
+docker compose up
+
+# Or build the image manually
+docker build -t jarvis .
+```
+
+---
+
 ## 📋 Requirements
 
 | Requirement | Details |

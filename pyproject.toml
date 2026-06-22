@@ -1,0 +1,156 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jarvis"
+version = "46.0.0"
+description = "MARK XLVI — Modular AI assistant with LiteLLM, pgvector memory, and secure tooling"
+readme = "readme.md"
+license = { text = "BY-NC 4.0" }
+requires-python = ">=3.11"
+authors = [
+    { name = "FatihMakes", email = "dev@jarvis.ai" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "litellm>=1.60",
+    "pydantic>=2.10",
+    "pydantic-settings>=2.7",
+    "python-dotenv>=1.0",
+    "sounddevice>=0.5",
+    "numpy>=1.26",
+    "pillow>=10.0",
+    "requests>=2.32",
+    "beautifulsoup4>=4.12",
+    "duckduckgo-search>=6.0",
+    "psutil>=6.0",
+    "send2trash>=1.8",
+    "qrcode[pil]>=7.4",
+    "tenacity>=9.0",
+    "structlog>=24.4",
+    "platformdirs>=4.3",
+    "keyring>=25.4",
+    "cryptography>=44.0",
+]
+
+[project.optional-dependencies]
+dashboard = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.34",
+    "python-multipart>=0.0.20",
+    "websockets>=14.0",
+]
+audio = [
+    "edge-tts>=7.0",
+    "faster-whisper>=1.1",
+    "vosk>=0.3.45",
+    "pyaudio>=0.2.14",
+]
+vision = [
+    "opencv-python>=4.10",
+    "mss>=10.0",
+]
+windows = [
+    "comtypes>=1.4; sys_platform == 'win32'",
+    "pycaw>=20240210; sys_platform == 'win32'",
+    "win10toast>=0.9; sys_platform == 'win32'",
+    "pywinauto>=0.6.8; sys_platform == 'win32'",
+    "pygetwindow>=0.0.9; sys_platform == 'win32'",
+]
+desktop = [
+    "pyautogui>=0.9.54",
+    "pyperclip>=1.9",
+    "pyscreeze>=0.1.30",
+    "pymsgbox>=1.0.9",
+]
+browser = [
+    "playwright>=1.49",
+]
+files = [
+    "pandas>=2.2",
+    "openpyxl>=3.1",
+    "python-docx>=1.1",
+    "pydub>=0.25",
+    "youtube-transcript-api>=0.6.2",
+    "python-pptx>=1.0",
+]
+memory = [
+    "psycopg[binary,pool]>=3.2",
+    "pgvector>=0.3.6",
+    "sqlalchemy>=2.0",
+    "alembic>=1.14",
+    "hindsight>=0.4",
+]
+embeddings = [
+    "sentence-transformers>=3.0",
+]
+agent = [
+    "agent-zero>=0.2",
+    "instructor>=1.7",
+]
+observability = [
+    "opentelemetry-api>=1.29",
+    "opentelemetry-sdk>=1.29",
+    "opentelemetry-exporter-otlp>=1.29",
+    "opentelemetry-instrumentation>=0.50b0",
+]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.25",
+    "pytest-cov>=6.0",
+    "ruff>=0.9",
+    "mypy>=1.15",
+    "bandit>=1.8",
+    "pre-commit>=4.0",
+]
+all = [
+    "jarvis[dashboard,audio,vision,windows,desktop,browser,files,memory,embeddings,agent,observability,dev]",
+]
+
+[project.scripts]
+jarvis = "jarvis.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["jarvis"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E", "F", "I", "W", "N", "D", "UP", "B", "C4", "SIM", "TCH", "ARG",
+    "PL", "RUF", "S", "ASYNC", "A", "T20", "C90",
+]
+ignore = [
+    "D100", "D104", "D203", "D213", "S101", "S311",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 12
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "--cov=jarvis --cov-report=term-missing --cov-report=xml"
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]

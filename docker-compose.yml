@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: jarvis
+      POSTGRES_PASSWORD: jarvis
+      POSTGRES_DB: jarvis
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jarvis -d jarvis"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  jarvis:
+    build: .
+    environment:
+      JARVIS_MEMORY_BACKEND: postgres
+      JARVIS_POSTGRES_URL: postgresql://jarvis:jarvis@postgres:5432/jarvis
+      JARVIS_DASHBOARD_HOST: "0.0.0.0"
+      JARVIS_DASHBOARD_PORT: "8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - jarvis_data:/app/data
+    command: ["uv", "run", "python", "-m", "jarvis.main", "--gui"]
+    # Note: GUI mode in Docker requires a VNC/X11 setup; for headless use remove --gui
+
+volumes:
+  pgdata:
+  jarvis_data:
