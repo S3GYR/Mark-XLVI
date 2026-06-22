@@ -48,6 +48,13 @@ async def handle_client_ws(
                         wake_callback()
     except WebSocketDisconnect:
         pass
+    except asyncio.CancelledError:
+        pass
+    except ConnectionResetError:
+        pass
+    except Exception as e:
+        # Log unexpected errors but don't crash
+        pass
     finally:
         server._clients.discard(websocket)
 
@@ -72,4 +79,11 @@ async def handle_phone_audio(
             except asyncio.QueueFull:
                 pass
     except WebSocketDisconnect:
+        pass
+    except asyncio.CancelledError:
+        pass
+    except ConnectionResetError:
+        pass
+    except Exception as e:
+        # Log unexpected errors but don't crash
         pass
